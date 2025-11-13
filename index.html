@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Purchase Requisition Form</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Purchase Requisition Form</h1>
+
+    <div class="card section">
+      <div class="grid">
+        <div class="col-6">
+          <label for="projectName">Project Name</label>
+          <input id="projectName" type="text" placeholder="Enter project name">
+        </div>
+        <div class="col-3">
+          <label for="requisitionNo">Requisition No</label>
+          <input id="requisitionNo" type="text" placeholder="e.g. GR-00123">
+        </div>
+        <div class="col-3">
+          <label for="date">Date</label>
+          <input id="date" type="date">
+        </div>
+        <div class="col-6">
+          <label for="engineer">Purchase Engineer</label>
+          <input id="engineer" type="text" placeholder="Enter name">
+        </div>
+      </div>
+    </div>
+
+    <div class="card section">
+      <div class="grid">
+        <div class="col-8">
+          <label for="materialName">Material Name / Description</label>
+          <input id="materialName" type="text" placeholder="e.g. Aluminum Sheet 2mm">
+        </div>
+        <div class="col-2">
+          <label for="qty">Qty</label>
+          <input id="qty" type="number" min="1" step="1" placeholder="0">
+        </div>
+        <div class="col-2">
+          <label for="price">Price</label>
+          <input id="price" type="number" min="0" step="0.01" placeholder="0.00">
+        </div>
+        <div class="col-12 actions">
+          <button class="btn-secondary" id="addBtn" type="button">Add Material</button>
+          <button class="btn-ghost" id="resetBtn" type="button">Reset</button>
+          <button class="btn-primary" id="submitBtn" type="button">Submit (Export PDF)</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card section table" aria-live="polite">
+      <table id="materialsTable">
+        <thead>
+          <tr>
+            <th style="width: 70px; text-align:center;">S. No</th>
+            <th>Description</th>
+            <th style="width: 100px; text-align:right;">Qty</th>
+            <th style="width: 140px; text-align:right;">Price</th>
+            <th style="width: 60px;"></th>
+          </tr>
+        </thead>
+        <tbody id="materialsBody">
+          <tr class="empty-row">
+            <td colspan="5" class="small">No materials added yet.</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" style="text-align:right;">Total</td>
+            <td id="totalCell" style="text-align:right;">0.00</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p class="small">Note: Total is computed as sum of (Qty × Price).</p>
+  </div>
+
+  <!-- Hidden printable area that will be printed/saved to PDF -->
+  <div id="pdfArea" class="hide">
+    <div class="prf-page">
+      <div class="prf-header">
+        <img src="images/img 1.png" alt="Company Logo" class="company-logo">
+        <div class="header-title">Galexon Engineering Industries</div>
+        <div class="serial-number"><span id="pdf_serial">0</span></div>
+      </div>
+      <div class="prf-box">
+        <div class="prf-title">PURCHASE REQUISITION FORM</div>
+        <div class="prf-row">
+          <div class="prf-cell"><strong>Project Name :</strong> <span id="pdf_projectName"></span></div>
+          <div class="prf-cell"><strong>Requisition No :</strong> <span id="pdf_requisitionNo"></span></div>
+        </div>
+        <div class="prf-row">
+          <div class="prf-cell"><strong>Purchase Engineer :</strong> <span id="pdf_engineer"></span></div>
+          <div class="prf-cell"><strong>Date :</strong> <span id="pdf_date"></span></div>
+        </div>
+        <table class="prf-table">
+          <colgroup>
+            <col style="width:40px;">
+            <col style="width:auto;">
+            <col style="width:50px;">
+            <col style="width:60px;">
+          </colgroup>
+          <thead>
+            <tr>
+              <th style="width: 45px;">S.No</th>
+              <th>Description</th>
+              <th style="width: 45px;">Qty</th>
+              <th style="width: 60px;">Price</th>
+            </tr>
+          </thead>
+          <tbody id="pdf_table_body">
+            <!-- Rows will be rendered here per material to ensure table borders expand correctly in PDF -->
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" style="border-right: 0;"></td>
+              <td style="text-align: right; font-weight:700;">Total :</td>
+              <td id="pdf_total" style="text-align: right; font-weight:700;">0.00</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="prf-footer">
+        <div class="prf-sign">Prepared</div>
+        <div class="prf-sign">Verified</div>
+        <div class="prf-sign">Approved</div>
+      </div>
+    </div>
+  </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <script src="script.js"></script>
+</body>
+</html>
