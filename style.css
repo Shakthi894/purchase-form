@@ -168,23 +168,29 @@ button {
 }
 .prf-table {
   width: 100%;
+  border: 2px solid #000;
   border-collapse: collapse;
-  table-layout: fixed;
-  font-size: 11px;
+  font-size: 12px;
+  margin-top: 12px;
+  /* The following allows the box to fill space if there are lots of rows */
+  min-height: 380px;         /* To visually give a box effect when there are few rows */
+  max-height: 900px;         /* Never clip, but max at almost A4, actual rows can still extend further */
 }
-.prf-table th, .prf-table td {
+.prf-table th,
+.prf-table td {
   border: 1px solid #000;
-  padding: 4px 6px;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  white-space: normal;
-  box-sizing: border-box;
+  padding: 12px 14px; /* bigger cell for clarity */
+  text-align: center;
 }
 .prf-table th {
-  background-color: #f9fafb;
-  font-weight: 700;
-  text-align: left;
-  font-size: 10px;
+  background: #f9fafb;
+  font-weight: bold;
+  font-size: 13px;
+}
+.prf-table tfoot td {
+  font-weight: bold;
+  text-align: right;
+  background: #fff;
 }
 
 /* Ensure table body rows grow dynamically to fit content when exporting to PDF */
@@ -219,15 +225,13 @@ button {
 }
 
 
-
+/* Make logo centered and larger */
 .company-logo {
-  height: 36px;
-  width: auto;
   display: block;
-  margin: 0;
-  position: absolute;
-  left: 8px;
-  top: 8px;
+  margin: 0 auto 24px auto;
+  height: 180px;
+  max-height: 180px;
+  object-fit: contain;
 }
 
 
