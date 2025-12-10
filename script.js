@@ -2,23 +2,42 @@ const el = (id) => document.getElementById(id);
 const materials = [];
 
 // --- AUTO REQUISITION NUMBER LOGIC --- //
+// pad with zeroes: 1 -> "000001"
 function pad(num, size) {
-  var s = num + "";
+  let s = String(num);
   while (s.length < size) s = "0" + s;
   return s;
 }
 
+/**
+ * On load: read last used number from localStorage ("pr_seq")
+ * and show NEXT number (last + 1) in the box.
+ * If none stored, start from GR-000001.
+ */
 function setNextRequisitionNo() {
-  let storedSeq = localStorage.getItem("pr_seq");
-  let seq = storedSeq ? parseInt(storedSeq, 10) + 1 : 1;
-  el("requisitionNo").value = "GR-" + pad(seq, 6);
+  const storedSeq = localStorage.getItem("pr_seq");
+  const lastUsed = storedSeq ? parseInt(storedSeq, 10) : 0; // last used number
+  const next = lastUsed + 1;                                // next to use
+  el("requisitionNo").value = "GR-" + pad(next, 6);
 }
 
+/**
+ * After a successful PDF download:
+ * 1) Take the current value in the box (e.g. "GR-000003")
+ * 2) Save 3 as the LAST used number
+ * 3) Immediately set the box to GR-000004 for the next entry
+ *    (and this will also be used next time the page is opened)
+ */
 function incrementRequisitionNo() {
-  let currentVal = el("requisitionNo").value;
-  let seq = parseInt(currentVal.replace("GR-", ""), 10) || 1;
-  localStorage.setItem("pr_seq", seq);
-  el("requisitionNo").value = "GR-" + pad(seq + 1, 6);
+  const currentVal = el("requisitionNo").value || "";
+  const currentNum = parseInt(currentVal.replace("GR-", ""), 10) || 1;
+
+  // store the LAST used number so next session starts from currentNum + 1
+  localStorage.setItem("pr_seq", currentNum);
+
+  // update input to next number for immediate use
+  const next = currentNum + 1;
+  el("requisitionNo").value = "GR-" + pad(next, 6);
 }
 // --- END AUTO REQUISITION NUMBER LOGIC --- //
 
@@ -35,7 +54,6 @@ function todayISO() {
   const dd = String(d.getDate()).padStart(2, "0");
   return d.getFullYear() + "-" + mm + "-" + dd;
 }
-
 
 // -------------------- RECALC --------------------
 function recalc() {
@@ -72,7 +90,6 @@ function recalc() {
   el("actTotal").textContent = formatMoney(actTotal);
 }
 
-
 // -------------------- ADD MATERIAL --------------------
 function addMaterial() {
   const name = el("materialName").value.trim();
@@ -94,17 +111,15 @@ function addMaterial() {
   recalc();
 }
 
-
 // -------------------- RESET FORM --------------------
 function resetAll() {
   el("projectName").value = "";
-  setNextRequisitionNo();
+  setNextRequisitionNo();       // show the next number based on last saved
   el("date").value = todayISO();
   el("engineer").value = "";
   materials.length = 0;
   recalc();
 }
-
 
 // -------------------- BUILD PDF --------------------
 function buildPdfArea() {
@@ -138,7 +153,6 @@ function buildPdfArea() {
   el("pdf_actTotal").textContent = formatMoney(actTotal);
 }
 
-
 // -------------------- SUBMIT PDF --------------------
 async function submitPdf() {
   if (!el("projectName").value.trim()) return alert("Project Name required");
@@ -161,9 +175,8 @@ async function submitPdf() {
     .save();
 
   pdfArea.classList.add("hide");
-  incrementRequisitionNo();
+  incrementRequisitionNo();     // move to next GR number after successful PDF
 }
-
 
 // -------------------- EVENTS --------------------
 el("addBtn").addEventListener("click", addMaterial);
@@ -184,5 +197,6 @@ el("materialsBody").addEventListener("click", (e) => {
   });
 });
 
+// initial setup on load
 el("date").value = todayISO();
 window.addEventListener("DOMContentLoaded", setNextRequisitionNo);
